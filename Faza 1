@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+
+class Pix {
+public:
+    int* idPix;
+    static int totalPixuri;
+    const int capacitateMaximaCerneala;
+
+    Pix(int id, int cerneala) : idPix(new int(id)), capacitateMaximaCerneala(cerneala) {
+        totalPixuri++;
+    }
+
+    Pix(int id) : Pix(id, 100) {}
+
+    Pix() : Pix(0, 100) {}
+
+    ~Pix() {
+        delete idPix;
+    }
+
+    static int getTotalPixuri() {
+        return totalPixuri;
+    }
+};
+
+int Pix::totalPixuri = 0;
+
+class Carte {
+public:
+    int* numarPagini;
+    static const std::string material;
+    const double greutate;
+
+    Carte(int p, double g) : numarPagini(new int(p)), greutate(g) {}
+
+    Carte(int p) : Carte(p, 1.5) {}
+
+    Carte() : Carte(100, 1.5) {}
+
+    ~Carte() {
+        delete numarPagini;
+    }
+
+    static std::string getMaterial() {
+        return material;
+    }
+};
+
+const std::string Carte::material = "Hartie";
+
+class Calculator {
+public:
+    double* valoare;
+    static const char marca;
+    const bool alimentareSolara;
+
+    Calculator(double v, bool solar) : valoare(new double(v)), alimentareSolara(solar) {}
+
+    Calculator(double v) : Calculator(v, true) {}
+
+    Calculator() : Calculator(0.0, true) {}
+
+    ~Calculator() {
+        delete valoare;
+    }
+
+    static char getMarca() {
+        return marca;
+    }
+};
+
+const char Calculator::marca = 'C';
+
+int main() {
+    Pix pix1(1, 90);
+    Pix pix2(2);
+    Pix pix3;
+
+    std::cout << "Total Pixuri: " << Pix::getTotalPixuri() << std::endl;
+
+    Carte carte1(200, 2.0);
+    Carte carte2(150);
+    Carte carte3;
+
+    std::cout << "Material: " << Carte::getMaterial() << std::endl;
+
+    Calculator calculator1(50.5, false);
+    Calculator calculator2(30.2);
+    Calculator calculator3;
+
+    std::cout << "Marca: " << Calculator::getMarca() << std::endl;
+
+    return 0;
+}
