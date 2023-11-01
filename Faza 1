@@ -2,11 +2,12 @@
 #include <string>
 
 class Pix {
-public:
+private:
     int* idPix;
     static int totalPixuri;
     const int capacitateMaximaCerneala;
 
+public:
     Pix(int id, int cerneala) : idPix(new int(id)), capacitateMaximaCerneala(cerneala) {
         totalPixuri++;
     }
@@ -71,6 +72,14 @@ public:
 };
 
 const char Calculator::marca = 'C';
+
+void procesarePix(const Pix& pix) {
+    std::cout << "Procesare Pix: ID=" << pix.getIdPix() << ", Cerneala=" << pix.getCerneala() << std::endl;
+}
+
+void procesareCalculator(const Calculator& calc) {
+    std::cout << "Procesare Calculator: Valoare=" << calc.getValoare() << ", Alimentare solara=" << calc.getAlimentareSolara() << std::endl;
+}
 
 int main() {
     Pix pix1(1, 90);
