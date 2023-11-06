@@ -5,13 +5,15 @@ class Pix {
 private:
     int* idPix;
     static int totalPixuri;
-    const int capacitateMaximaCerneala;
+    int capacitateMaximaCerneala;
 
 public:
     Pix(int id, int cerneala) : idPix(new int(id)), capacitateMaximaCerneala(cerneala) {
         totalPixuri++;
     }
-
+    int getCerneala() const {
+        return capacitateMaximaCerneala;
+    }
     Pix(int id) : Pix(id, 100) {}
 
     Pix() : Pix(0, 100) {}
@@ -19,20 +21,50 @@ public:
     ~Pix() {
         delete idPix;
     }
+    friend void functiePrietena(const Pix& pix);
+    Pix& operator=(const Pix& other) {
+        if (this != &other) {
+            delete idPix;
+            idPix = new int(*(other.idPix));
+            capacitateMaximaCerneala = other.capacitateMaximaCerneala;
+        }
+        return *this;
+    }
+    Pix operator+(const Pix& other) const {
+        return Pix(*idPix + *(other.idPix), capacitateMaximaCerneala + other.capacitateMaximaCerneala);
+    }
 
     static int getTotalPixuri() {
         return totalPixuri;
     }
+    int getIdPix() const {
+        return *idPix;
+    }
+
+    int getCerneala() {
+        return capacitateMaximaCerneala;
+    }
+
+    Pix operator-(const Pix& other) const {
+        return Pix(*idPix - *(other.idPix), capacitateMaximaCerneala - other.capacitateMaximaCerneala);
+    }
+    friend std::ostream& operator<<(std::ostream& os, const Pix& pix);
 };
+
+std::ostream& operator<<(std::ostream& os, const Pix& pix) {
+    os << "ID: " << *(pix.idPix) << ", Cerneala: " << pix.capacitateMaximaCerneala;
+    return os;
+}
 
 int Pix::totalPixuri = 0;
 
 class Carte {
-public:
+private:
     int* numarPagini;
     static const std::string material;
-    const double greutate;
+    double greutate;
 
+public:
     Carte(int p, double g) : numarPagini(new int(p)), greutate(g) {}
 
     Carte(int p) : Carte(p, 1.5) {}
@@ -42,20 +74,49 @@ public:
     ~Carte() {
         delete numarPagini;
     }
+    Carte& operator=(const Carte& other) {
+        if (this != &other) {
+            delete numarPagini;
+            numarPagini = new int(*(other.numarPagini));
+            greutate = other.greutate;
+        }
+        return *this;
+    }
+    Carte operator-(const Carte& other) const {
+        return Carte(*numarPagini - *(other.numarPagini), greutate - other.greutate);
+    }
+
+    Carte(const Carte& other) : numarPagini(new int(*(other.numarPagini))), greutate(other.greutate) {}
+
+    int getNumarPagini() const {
+        return *numarPagini;
+    }
+
+    double getGreutate() const {
+        return greutate;
+    }
 
     static std::string getMaterial() {
         return material;
     }
+    friend std::ostream& operator<<(std::ostream& os, const Carte& carte);
 };
+
+std::ostream& operator<<(std::ostream& os, const Carte& carte) {
+    os << "Numar pagini: " << *(carte.numarPagini) << ", Greutate: " << carte.greutate;
+    return os;
+};
+
 
 const std::string Carte::material = "Hartie";
 
 class Calculator {
-public:
+private:
     double* valoare;
     static const char marca;
-    const bool alimentareSolara;
+    bool alimentareSolara;
 
+public:
     Calculator(double v, bool solar) : valoare(new double(v)), alimentareSolara(solar) {}
 
     Calculator(double v) : Calculator(v, true) {}
@@ -65,11 +126,44 @@ public:
     ~Calculator() {
         delete valoare;
     }
+    Calculator& operator=(const Calculator& other) {
+        if (this != &other) {
+            delete valoare;
+            valoare = new double(*(other.valoare));
+            alimentareSolara = other.alimentareSolara;
+        }
+        return *this;
+    }
+    Calculator operator*(const Calculator& other) const {
+        return Calculator(*valoare * *(other.valoare), alimentareSolara && other.alimentareSolara);
+    }
+
+    Calculator(const Calculator& other) : valoare(new double(*(other.valoare))), alimentareSolara(other.alimentareSolara) {}
+
+    double getValoare() const {
+        return *valoare;
+    }
+
+    void setValoare(double v) {
+        *valoare = v;
+    }
+
+    bool getAlimentareScolara() const {
+        return alimentareSolara;
+    }
 
     static char getMarca() {
         return marca;
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const Calculator& calculator);
 };
+
+std::ostream& operator<<(std::ostream& os, const Calculator& calculator) {
+    os << "Valoare: " << *(calculator.valoare) << ", Alimentare solara: " << calculator.alimentareSolara;
+    return os;
+};
+
 
 const char Calculator::marca = 'C';
 
@@ -78,7 +172,10 @@ void procesarePix(const Pix& pix) {
 }
 
 void procesareCalculator(const Calculator& calc) {
-    std::cout << "Procesare Calculator: Valoare=" << calc.getValoare() << ", Alimentare solara=" << calc.getAlimentareSolara() << std::endl;
+    std::cout << "Procesare Calculator: Valoare=" << calc.getValoare() << ", Alimentare solara=" << calc.getAlimentareScolara() << std::endl;
+}
+void functiePrietena(const Pix& pix) {
+    std::cout << "Functie Prietena Pix: ID=" << pix.getIdPix() << ", Cerneala=" << pix.getCerneala() << std::endl;
 }
 
 int main() {
@@ -99,6 +196,14 @@ int main() {
     Calculator calculator3;
 
     std::cout << "Marca: " << Calculator::getMarca() << std::endl;
+    Pix pix4 = pix1 + pix2;
+    Carte carte4 = carte1 - carte2;
+    Calculator calculator4 = calculator1 * calculator2;
+
+    functiePrietena(pix1);
+
+    std::cout << "Total Pixuri: " << Pix::getTotalPixuri() << std::endl;
+
 
     return 0;
 }
