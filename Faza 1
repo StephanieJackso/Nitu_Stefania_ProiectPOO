@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 class Pix {
 private:
@@ -178,6 +179,33 @@ void functiePrietena(const Pix& pix) {
     std::cout << "Functie Prietena Pix: ID=" << pix.getIdPix() << ", Cerneala=" << pix.getCerneala() << std::endl;
 }
 
+std::istream& operator>>(std::istream& is, Pix& pix) {
+    int id, cerneala;
+    std::cout << "Introduceti ID-ul si cantitatea de cerneala pentru Pix: ";
+    is >> id >> cerneala;
+    pix = Pix(id, cerneala);
+    return is;
+}
+
+std::istream& operator>>(std::istream& is, Carte& carte) {
+    int pagini;
+    double greutate;
+    std::cout << "Introduceti numarul de pagini si greutatea pentru Carte: ";
+    is >> pagini >> greutate;
+    carte = Carte(pagini, greutate);
+    return is;
+}
+
+std::istream& operator>>(std::istream& is, Calculator& calculator) {
+    double valoare;
+    bool alimentareSolara;
+    std::cout << "Introduceti valoarea si 1 daca are alimentare solara, altfel 0 pentru Calculator: ";
+    is >> valoare >> alimentareSolara;
+    calculator = Calculator(valoare, alimentareSolara);
+    return is;
+}
+
+
 int main() {
     Pix pix1(1, 90);
     Pix pix2(2);
@@ -203,7 +231,45 @@ int main() {
     functiePrietena(pix1);
 
     std::cout << "Total Pixuri: " << Pix::getTotalPixuri() << std::endl;
+    std::vector<Pix> pixVector(3);
+    std::vector<Carte> carteVector(3);
+    std::vector<Calculator> calculatorVector(3);
+    for (int i = 0; i < 3; ++i) {
+        std::cin >> pixVector[i];
+        std::cin >> carteVector[i];
+        std::cin >> calculatorVector[i];
+    }
+    std::cout << "Obiecte din vectorul de Pix:\n";
+    for (const auto& pix : pixVector) {
+        std::cout << pix << std::endl;
+    }
 
+    std::cout << "Obiecte din vectorul de Carte:\n";
+    for (const auto& carte : carteVector) {
+        std::cout << carte << std::endl;
+    }
+
+    std::cout << "Obiecte din vectorul de Calculator:\n";
+    for (const auto& calculator : calculatorVector) {
+        std::cout << calculator << std::endl;
+    }
+    const int rows = 2;
+    const int cols = 2;
+    Calculator calculatorMatrix[rows][cols];
+
+    std::cout << "Introduceti obiectele pentru matricea de Calculator:\n";
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            std::cin >> calculatorMatrix[i][j];
+        }
+    }
+    std::cout << "Obiecte din matricea de Calculator:\n";
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            std::cout << calculatorMatrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
 
     return 0;
 }
