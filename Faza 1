@@ -204,7 +204,32 @@ std::istream& operator>>(std::istream& is, Calculator& calculator) {
     calculator = Calculator(valoare, alimentareSolara);
     return is;
 }
-
+class ObiectComplet {
+private:
+    std::vector<Pix> pixVector;
+    std::string numeObiect;
+    std::string dataAchizitie;
+public:
+    ObiectComplet(const std::vector<Pix>& pixVec, double val, const std::string& nume, bool act, const std::string& data,
+        const std::vector<Carte>& carteVec, const Calculator& calc, bool calcActive) : pixVector(pixVec) {
+        std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
+        std::vector<Carte> carteVector1 = { Carte(150), Carte(200, 2.0) };
+        Calculator calculator1(30.2);
+    }
+    const std::vector<Pix>& getPixVector() const {
+        return pixVector;
+    }
+    void setPixVector(const std::vector<Pix>& pixVec) {
+        pixVector = pixVec;
+    }
+    void afisareDetalii() const {
+        std::cout << "Detalii ObiectComplet:\n";
+        std::cout << "Obiecte Pix:\n";
+        for (const auto& pix : pixVector) {
+            std::cout << pix << std::endl;
+        }
+    }
+};
 
 int main() {
     Pix pix1(1, 90);
@@ -270,6 +295,10 @@ int main() {
         }
         std::cout << std::endl;
     }
-
+    std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
+    std::vector<Pix> pixVector2 = { Pix(12, 30), Pix(13, 40) };
+    std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
+    ObiectComplet obiect1(pixVector1, 20.5, "Obiect1", true, "2023-01-01",
+        {}, Calculator(), false);
     return 0;
 }
