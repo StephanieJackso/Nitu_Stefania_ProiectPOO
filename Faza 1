@@ -165,9 +165,7 @@ std::ostream& operator<<(std::ostream& os, const Calculator& calculator) {
     return os;
 };
 
-
 const char Calculator::marca = 'C';
-
 void procesarePix(const Pix& pix) {
     std::cout << "Procesare Pix: ID=" << pix.getIdPix() << ", Cerneala=" << pix.getCerneala() << std::endl;
 }
@@ -228,6 +226,42 @@ public:
         for (const auto& pix : pixVector) {
             std::cout << pix << std::endl;
         }
+    }
+};
+
+class PixSpecial : public Pix {
+private:
+    std::string culoare;
+public:
+    PixSpecial(int id, int cerneala, const std::string& col)
+        : Pix(id, cerneala), culoare(col) {
+        std::cout << "Obiect PixSpecial creat." << std::endl;
+    }
+    const std::string& getCuloare() const {
+        return culoare;
+    }
+    void setCuloare(const std::string& col) {
+        culoare = col;
+    }
+    void afisareDetaliiPixSpecial() const {
+        std::cout << "Detalii PixSpecial - ID: " << getIdPix()
+            << ", Cerneala: " << getCerneala()
+            << ", Culoare: " << culoare << std::endl;
+    }
+};
+
+class CalculatorAdvanced : public Calculator {
+private:
+    int memorieRAM;
+public:
+    CalculatorAdvanced(double v, bool solar, int ram) : Calculator(v, solar), memorieRAM(ram) {
+        std::cout << "Obiect CalculatorAdvanced creat." << std::endl;
+    }
+    int getMemorieRAM() const {
+        return memorieRAM;
+    }
+    void setMemorieRAM(int ram) {
+        memorieRAM = ram;
     }
 };
 
@@ -298,7 +332,15 @@ int main() {
     std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
     std::vector<Pix> pixVector2 = { Pix(12, 30), Pix(13, 40) };
     std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
-    ObiectComplet obiect1(pixVector1, 20.5, "Obiect1", true, "2023-01-01",
-        {}, Calculator(), false);
+    ObiectComplet obiect1(pixVector1, 20.5, "Obiect1", true, "2023-01-01",{}, Calculator(), false);
+    PixSpecial pixSpecial(3, 120, "Albastru");
+    CalculatorAdvanced calcAdvanced(75.0, true, 8);
+    Pix pixUpcasted = static_cast<Pix>(pixSpecial);
+    Calculator calcUpcasted = static_cast<Calculator>(calcAdvanced);
+    std::cout << "Pix Special: " << pixSpecial << ", Culoare: " << pixSpecial.getCuloare() << std::endl;
+    std::cout << "Calculator Advanced: " << calcAdvanced << ", Memorie RAM: " << calcAdvanced.getMemorieRAM() << " GB" 
+        << std::endl;
+    std::cout << "Upcasted Pix: " << pixUpcasted << std::endl;
+    std::cout << "Upcasted Calculator: " << calcUpcasted << std::endl;
     return 0;
 }
