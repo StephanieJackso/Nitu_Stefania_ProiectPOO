@@ -331,7 +331,7 @@ int main() {
     }
     std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
     std::vector<Pix> pixVector2 = { Pix(12, 30), Pix(13, 40) };
-    std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
+    std::vector<Pix> pixVector3 = { Pix(10, 50), Pix(11, 75) };
     ObiectComplet obiect1(pixVector1, 20.5, "Obiect1", true, "2023-01-01",{}, Calculator(), false);
     PixSpecial pixSpecial(3, 120, "Albastru");
     CalculatorAdvanced calcAdvanced(75.0, true, 8);
