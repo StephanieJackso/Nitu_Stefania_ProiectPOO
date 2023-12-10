@@ -2,7 +2,14 @@
 #include <string>
 #include <vector>
 
-class Pix {
+class AbstractPix {
+public:
+    virtual int getCerneala() const = 0;
+    virtual void afisareDetalii() const = 0;
+    virtual ~AbstractPix() {}
+};
+
+class Pix : public AbstractPix {
 private:
     int* idPix;
     static int totalPixuri;
@@ -34,7 +41,12 @@ public:
     Pix operator+(const Pix& other) const {
         return Pix(*idPix + *(other.idPix), capacitateMaximaCerneala + other.capacitateMaximaCerneala);
     }
-
+    void afisareDetalii() const override {
+        std::cout << "ID: " << *(idPix) << ", Cerneala: " << capacitateMaximaCerneala << std::endl;
+    }
+    int getCerneala() const override {
+        return capacitateMaximaCerneala;
+    }
     static int getTotalPixuri() {
         return totalPixuri;
     }
@@ -42,7 +54,7 @@ public:
         return *idPix;
     }
 
-    int getCerneala() {
+    int getCerneala()  const override {
         return capacitateMaximaCerneala;
     }
 
@@ -111,7 +123,7 @@ std::ostream& operator<<(std::ostream& os, const Carte& carte) {
 
 const std::string Carte::material = "Hartie";
 
-class Calculator {
+class Calculator: public AbstractCalculator {
 private:
     double* valoare;
     static const char marca;
@@ -138,7 +150,17 @@ public:
     Calculator operator*(const Calculator& other) const {
         return Calculator(*valoare * *(other.valoare), alimentareSolara && other.alimentareSolara);
     }
+    double getValoare() const override {
+        return *valoare;
+    }
 
+    bool getAlimentareSolara() const override {
+        return alimentareSolara;
+    }
+
+    void afisareDetalii() const override {
+        std::cout << "Valoare: " << *(valoare) << ", Alimentare solara: " << alimentareSolara << std::endl;
+    }
     Calculator(const Calculator& other) : valoare(new double(*(other.valoare))), alimentareSolara(other.alimentareSolara) {}
 
     double getValoare() const {
@@ -202,23 +224,45 @@ std::istream& operator>>(std::istream& is, Calculator& calculator) {
     calculator = Calculator(valoare, alimentareSolara);
     return is;
 }
+
+class AbstractCalculator {
+public:
+    virtual double getValoare() const = 0;
+    virtual bool getAlimentareSolara() const = 0;
+    virtual void afisareDetalii() const = 0;
+    virtual ~AbstractCalculator() {}
+};
 class ObiectComplet {
 private:
-    std::vector<Pix> pixVector;
+    std::vector<AbstractPix*> pixVector;
     std::string numeObiect;
     std::string dataAchizitie;
 public:
     ObiectComplet(const std::vector<Pix>& pixVec, double val, const std::string& nume, bool act, const std::string& data,
-        const std::vector<Carte>& carteVec, const Calculator& calc, bool calcActive) : pixVector(pixVec) {
+        const std::vector<Carte>& carteVec = {}, const Calculator& calc = Calculator(), bool calcActive = false) {
         std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
         std::vector<Carte> carteVector1 = { Carte(150), Carte(200, 2.0) };
         Calculator calculator1(30.2);
     }
-    const std::vector<Pix>& getPixVector() const {
+    ObiectComplet& operator=(const ObiectComplet& o) {
+        if (this != &o) {
+            pixVector = o.pixVector;
+            numeObiect = o.numeObiect;
+            dataAchizitie = o.dataAchizitie;
+        }
+        return *this;
+    }
+    const std::vector<AbstractPix*>& getPixVector() const {
         return pixVector;
     }
     void setPixVector(const std::vector<Pix>& pixVec) {
-        pixVector = pixVec;
+        for (AbstractPix* pixPtr : pixVector) {
+            delete pixPtr; 
+        }
+        pixVector.clear();
+        for (const Pix& pix : pixVec) {
+            pixVector.push_back(new Pix(pix)); 
+        }
     }
     void afisareDetalii() const {
         std::cout << "Detalii ObiectComplet:\n";
@@ -332,15 +376,25 @@ int main() {
     std::vector<Pix> pixVector1 = { Pix(10, 50), Pix(11, 75) };
     std::vector<Pix> pixVector2 = { Pix(12, 30), Pix(13, 40) };
     std::vector<Pix> pixVector3 = { Pix(10, 50), Pix(11, 75) };
-    ObiectComplet obiect1(pixVector1, 20.5, "Obiect1", true, "2023-01-01",{}, Calculator(), false);
+    ObiectComplet obiect1(pixVector1, 20.5, "Obiect1", true, "2023-01-01", {}, Calculator(), false);
     PixSpecial pixSpecial(3, 120, "Albastru");
     CalculatorAdvanced calcAdvanced(75.0, true, 8);
     Pix pixUpcasted = static_cast<Pix>(pixSpecial);
     Calculator calcUpcasted = static_cast<Calculator>(calcAdvanced);
     std::cout << "Pix Special: " << pixSpecial << ", Culoare: " << pixSpecial.getCuloare() << std::endl;
-    std::cout << "Calculator Advanced: " << calcAdvanced << ", Memorie RAM: " << calcAdvanced.getMemorieRAM() << " GB" 
+    std::cout << "Calculator Advanced: " << calcAdvanced << ", Memorie RAM: " << calcAdvanced.getMemorieRAM() << " GB"
         << std::endl;
     std::cout << "Upcasted Pix: " << pixUpcasted << std::endl;
     std::cout << "Upcasted Calculator: " << calcUpcasted << std::endl;
+    std::vector<AbstractPix*> pixObjects;
+    pixObjects.push_back(new Pix(1, 90));
+    pixObjects.push_back(new Pix(2));
+    pixObjects.push_back(new Pix(3, 80));
+    for (const auto& pixPtr : pixObjects) {
+        pixPtr->afisareDetalii();
+    }
+    for (const auto& pixPtr : pixObjects) {
+        delete pixPtr;
+    }
     return 0;
 }
