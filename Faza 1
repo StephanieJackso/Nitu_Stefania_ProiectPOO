@@ -14,18 +14,15 @@ private:
     int* idPix;
     static int totalPixuri;
     int capacitateMaximaCerneala;
-
 public:
     Pix(int id, int cerneala) : idPix(new int(id)), capacitateMaximaCerneala(cerneala) {
         totalPixuri++;
     }
-    int getCerneala() const {
+    int getCerneala() const override{
         return capacitateMaximaCerneala;
     }
     Pix(int id) : Pix(id, 100) {}
-
     Pix() : Pix(0, 100) {}
-
     ~Pix() {
         delete idPix;
     }
@@ -44,18 +41,11 @@ public:
     void afisareDetalii() const override {
         std::cout << "ID: " << *(idPix) << ", Cerneala: " << capacitateMaximaCerneala << std::endl;
     }
-    int getCerneala() const override {
-        return capacitateMaximaCerneala;
-    }
     static int getTotalPixuri() {
         return totalPixuri;
     }
     int getIdPix() const {
         return *idPix;
-    }
-
-    int getCerneala()  const override {
-        return capacitateMaximaCerneala;
     }
 
     Pix operator-(const Pix& other) const {
@@ -120,22 +110,25 @@ std::ostream& operator<<(std::ostream& os, const Carte& carte) {
     return os;
 };
 
-
 const std::string Carte::material = "Hartie";
 
-class Calculator: public AbstractCalculator {
+class AbstractCalculator {
+public:
+    virtual double getValoare() const = 0;
+    virtual bool getAlimentareSolara() const = 0;
+    virtual void afisareDetalii() const = 0;
+    virtual ~AbstractCalculator() {}
+};
+
+class Calculator : public AbstractCalculator {
 private:
     double* valoare;
     static const char marca;
     bool alimentareSolara;
-
 public:
     Calculator(double v, bool solar) : valoare(new double(v)), alimentareSolara(solar) {}
-
     Calculator(double v) : Calculator(v, true) {}
-
     Calculator() : Calculator(0.0, true) {}
-
     ~Calculator() {
         delete valoare;
     }
@@ -153,32 +146,22 @@ public:
     double getValoare() const override {
         return *valoare;
     }
-
     bool getAlimentareSolara() const override {
         return alimentareSolara;
     }
-
     void afisareDetalii() const override {
         std::cout << "Valoare: " << *(valoare) << ", Alimentare solara: " << alimentareSolara << std::endl;
     }
     Calculator(const Calculator& other) : valoare(new double(*(other.valoare))), alimentareSolara(other.alimentareSolara) {}
-
-    double getValoare() const {
-        return *valoare;
-    }
-
     void setValoare(double v) {
         *valoare = v;
     }
-
     bool getAlimentareScolara() const {
         return alimentareSolara;
     }
-
     static char getMarca() {
         return marca;
     }
-
     friend std::ostream& operator<<(std::ostream& os, const Calculator& calculator);
 };
 
@@ -224,14 +207,6 @@ std::istream& operator>>(std::istream& is, Calculator& calculator) {
     calculator = Calculator(valoare, alimentareSolara);
     return is;
 }
-
-class AbstractCalculator {
-public:
-    virtual double getValoare() const = 0;
-    virtual bool getAlimentareSolara() const = 0;
-    virtual void afisareDetalii() const = 0;
-    virtual ~AbstractCalculator() {}
-};
 class ObiectComplet {
 private:
     std::vector<AbstractPix*> pixVector;
@@ -257,11 +232,11 @@ public:
     }
     void setPixVector(const std::vector<Pix>& pixVec) {
         for (AbstractPix* pixPtr : pixVector) {
-            delete pixPtr; 
+            delete pixPtr;
         }
         pixVector.clear();
         for (const Pix& pix : pixVec) {
-            pixVector.push_back(new Pix(pix)); 
+            pixVector.push_back(new Pix(pix));
         }
     }
     void afisareDetalii() const {
